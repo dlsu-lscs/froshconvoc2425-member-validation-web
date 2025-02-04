@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { number, z } from "zod";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -11,75 +11,78 @@ import {
   FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {useCookies} from "react-cookie";
+import { useCookies } from "react-cookie";
 
-
-import BarcodeScanner from "./Barcode.tsx"
-
+import { useToast } from "@/hooks/use-toast";
 
 const IDSchema = z.object({
   idNumber: z.string(),
 });
 
-
-export const IDForms = ({passIDData}) => {
-  //Constant URI LINK
+export const IDForms = () => {
+  // Constant URI LINK
   const URLLINK = "http://tomo-scanner.app.dlsu-lscs.org";
+  const { toast } = useToast();
 
-  const [,setCurrentUser] = useCookies<any>(["currentUser"]);
+  const [, setCurrentUser] = useCookies(["currentUser"]);
   const [ID, setID] = useState(0);
-
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${URLLINK}/status?studentId=` + ID, {
+        const response = await axios.get(`${URLLINK}/status?studentId=${ID}`, {
           headers: {
             "Content-Type": "application/json",
           },
         });
-        setCurrentUser("currentUser", response.data, {path: "/", maxAge: 60});
+        setCurrentUser("currentUser", response.data, { path: "/", maxAge: 60 });
+
+        const { full_name, position_name, committee_name } =
+          response.data.member_details;
+        const firstName = full_name.split(" ")[0];
+
+        toast({
+          title:
+            position_name === "Member"
+              ? `Hello ${firstName}, ${position_name} of La Salle Computer Society`
+              : `Hello ${firstName}, ${position_name} of ${committee_name}`,
+          className: "text-white bg-black rounded-lg border-2",
+        });
       } catch (error) {
-        if(error.name == "AxiosError"){
-          console.log(error.response.data.message)
-        }else{
-        console.log(error);
+        if (axios.isAxiosError(error)) {
+          console.log(error.response?.data?.message || "Axios error occurred");
+        } else {
+          console.log(error);
         }
       }
     };
-    if(ID){
-    fetchData();
-    }
-  }, [ID]);
 
-  //Forms
-  const form = useForm<z.infer<typeof IDSchema>>({
+    if (ID) {
+      fetchData();
+    }
+  }, [ID, setCurrentUser, toast]);
+
+  // Forms
+  const form = useForm({
     resolver: zodResolver(IDSchema),
     defaultValues: {
       idNumber: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof IDSchema>) => {
+  const onSubmit = (values: any) => {
     setID(Number(values.idNumber));
   };
 
-    const onNewScanResult = (decodedText, decodedResult) => {
-    setID(decodedText);
-    console.log(decodedResult);
-  };
-
   return (
-    <>
-      <div>
+    <div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="">
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex space-x-2">
             <FormField
               control={form.control}
@@ -93,7 +96,7 @@ export const IDForms = ({passIDData}) => {
                       className="text-black"
                     />
                   </FormControl>
-                  <FormMessage></FormMessage>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -108,16 +111,8 @@ export const IDForms = ({passIDData}) => {
           </div>
         </form>
       </Form>
-        <div>
-          <BarcodeScanner
-   fps={30}
-            qrbox={240}
-            disableFlip={false}
-            qrCodeSuccessCallback={onNewScanResult}
-          />
-        </div>
-      </div>
-    </>
+      <div></div>
+    </div>
   );
 };
 
