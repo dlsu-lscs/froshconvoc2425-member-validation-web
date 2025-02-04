@@ -24,6 +24,8 @@ const IDSchema = z.object({
   idNumber: z.string(),
 });
 
+import BarcodeScanner from "react-qr-barcode-scanner";
+
 export const IDForms = () => {
   // Constant URI LINK
   const URLLINK = "http://tomo-scanner.app.dlsu-lscs.org";
@@ -111,7 +113,18 @@ export const IDForms = () => {
           </div>
         </form>
       </Form>
-      <div></div>
+      <div>
+        <BarcodeScanner
+          onUpdate={(err: any, result: any) => {
+            if (err) {
+              console.log("error");
+            } else if (result) {
+              console.log(result.text);
+              setID(Number(result.text));
+            }
+          }}
+        />
+      </div>
     </div>
   );
 };
