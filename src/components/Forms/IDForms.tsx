@@ -85,7 +85,7 @@ export const IDForms = () => {
     <div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="flex space-x-2">
+          <div className="flex justify-center space-x-2">
             <FormField
               control={form.control}
               name="idNumber"
