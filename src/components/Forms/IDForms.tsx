@@ -24,7 +24,7 @@ const IDSchema = z.object({
   idNumber: z.string(),
 });
 
-import BarcodeScanner from "react-qr-barcode-scanner";
+import BarcodeScannerComponent from "react-qr-barcode-scanner";
 
 export const IDForms = () => {
   // Constant URI LINK
@@ -113,15 +113,13 @@ export const IDForms = () => {
           </div>
         </form>
       </Form>
-      <div>
-        <BarcodeScanner
+      <div className="my-4">
+        <BarcodeScannerComponent
+          width={500}
+          height={500}
           onUpdate={(err: any, result: any) => {
-            if (err) {
-              console.log("error");
-            } else if (result) {
-              console.log(result.text);
-              setID(Number(result.text));
-            }
+            if (err) console.log(err);
+            if (result) setID(Number(result.text));
           }}
         />
       </div>
