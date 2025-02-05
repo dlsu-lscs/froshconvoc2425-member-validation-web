@@ -2,7 +2,6 @@ import { useCookies } from "react-cookie";
 
 import {
   Card,
-  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -50,9 +49,6 @@ export const Info = () => {
               {currentUser.currentUser.member_details.id}
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <p>{currentUser.currentUser.status}</p>
-          </CardContent>
           <CardFooter>
             <Claim></Claim>
           </CardFooter>

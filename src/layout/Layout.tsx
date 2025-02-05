@@ -4,7 +4,6 @@ export const Layout = () => {
   return (
     <>
       <Home></Home>
-      {/* <Info></Info> */}
     </>
   );
 };
