@@ -1,16 +1,16 @@
-import { IDForms } from "../components/Forms/IDForms.tsx";
-import { Info } from "../components/Info/Info.tsx";
-import { useCookies } from "react-cookie";
+import { IDForms } from '../components/Forms/IDForms.tsx'
+import { Info } from '../components/Info/Info.tsx'
+import { useCookies } from 'react-cookie'
 
 export const Home = () => {
-  const [currentUser, ,] = useCookies(["currentUser"]);
+  const [currentUser, ,] = useCookies(['currentUser'])
 
   return (
     <>
       <div className="min-h-screen bg-[#000000] md:p-8 text-white p-6">
         <div>
           <div className="flex justify-center font-bold md:text-4xl text-3xl">
-            Frosh Convocation
+            Macky’s Heartstrings
           </div>
           <div className="flex justify-center py-2">
             Scan to Verify LSCS Membership
@@ -29,7 +29,7 @@ export const Home = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
